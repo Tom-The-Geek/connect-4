@@ -1,0 +1,104 @@
+#app {
+  font-family: Poppins, Avenir, Helvetica, Arial, sans-serif;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+  display: flex;
+  flex-direction: column;
+  justify-content: center;
+  align-items: center;
+  color: #2c3e50;
+  margin-top: 60px;
+}
+
+.grid-container {
+  width: calc(66px * 7);
+  height: calc(64px * 6);
+  position: relative;
+}
+
+.grid {
+  display: flex;
+  flex-direction: row;
+  width: calc(66px * 7);
+  height: calc(64px * 6);
+  border: 1px solid black;
+}
+
+.column {
+  width: 66px;
+  height: calc(64px * 6);
+  display: flex;
+  flex-direction: column-reverse;
+  border: 1px solid black;
+}
+
+.column:not(.full):hover::after {
+  content: '';
+  display: block;
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  opacity: .25;
+}
+
+.grid.red > .column:hover::after {
+  background-color: red;
+}
+
+.grid.yellow > .column:hover::after {
+  background-color: yellow;
+}
+
+.token {
+  width: 64px;
+  height: 64px;
+  border-radius: 50%;
+  animation: fall-in 250ms ease-in;
+}
+
+.token-red {
+  background-color: red;
+}
+
+.token-yellow {
+  background-color: yellow;
+}
+
+@keyframes fall-in {
+  from {
+    transform: translateY(-100vh);
+  }
+  to {
+    transform: translateY(0);
+  }
+}
+
+.win-message {
+  position: absolute;
+  top: 0;
+  left: 0;
+  width: calc((66px * 7) + 1px);
+  height: calc((64px * 6) + 3px);
+  display: grid;
+  place-items: center;
+  margin: 0;
+  color: white;
+  background-color: rgba(0, 0, 0, .5);
+  backdrop-filter: blur(8px);
+  animation: fade-in 1000ms linear;
+}
+
+@keyframes fade-in {
+  0% {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  30% {
+    opacity: 0;
+    backdrop-filter: blur(0);
+  }
+  to {
+    opacity: 1;
+    backdrop-filter: blur(8px);
+  }
+}
