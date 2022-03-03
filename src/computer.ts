@@ -45,22 +45,18 @@ async function minimaxSearch(grid: Grid, side: Colour, depth: number, alpha: num
         return 0;
     }
 
-    // return await new Promise(async (resolve) => {
-    //     setTimeout(async () => {
-            for (let move = 0; move < 7; move++) {
-                if (grid[move].length >= 6) {
-                    continue;
-                } // skip full rows
-                const newGrid = makeMove(grid, side, move);
-                const score = -(await minimaxSearch(newGrid, otherColour(side), depth - 1, -beta, -alpha));
-                if (score >= beta) {
-                    return beta;
-                }
-                alpha = Math.max(alpha, score);
-            }
-            return (alpha);
-    //     }, 0);
-    // });
+    for (let move = 0; move < 7; move++) {
+        if (grid[move].length >= 6) {
+            continue;
+        } // skip full rows
+        const newGrid = makeMove(grid, side, move);
+        const score = -(await minimaxSearch(newGrid, otherColour(side), depth - 1, -beta, -alpha));
+        if (score >= beta) {
+            return beta;
+        }
+        alpha = Math.max(alpha, score);
+    }
+    return alpha;
 }
 
 function makeMove(grid: Grid, colour: Colour, move: number): Grid {
