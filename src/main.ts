@@ -1,8 +1,9 @@
 import './style.css';
 import '@fontsource/poppins';
+import { evaluteMoves } from './computer';
 
-type Colour = 'red' | 'yellow';
-type Grid = [Colour[], Colour[], Colour[], Colour[], Colour[], Colour[], Colour[]];
+export type Colour = 'red' | 'yellow';
+export type Grid = [Colour[], Colour[], Colour[], Colour[], Colour[], Colour[], Colour[]];
 
 function getColumnElement(idx: number): HTMLDivElement {
   return document.querySelector<HTMLDivElement>(`#col-${idx}`)!;
@@ -11,7 +12,7 @@ function getColumnElement(idx: number): HTMLDivElement {
 const gridContainer = document.querySelector<HTMLDivElement>('.grid-container')!;
 const gridEle = document.querySelector<HTMLDivElement>('.grid')!;
 
-function otherColour(col: Colour): Colour {
+export function otherColour(col: Colour): Colour {
   switch (col) {
     case 'red':
       return 'yellow';
@@ -63,7 +64,7 @@ function availableColumns(): number[] {
   return available;
 }
 
-function checkForWinHorizontal(): Colour | null {
+function checkForWinHorizontal(grid: Grid): Colour | null {
   for (let row = 0; row < 6; row++) {
     for (let startCol = 0; startCol < 4; startCol++) {
       const startColumn = grid[startCol];
@@ -92,7 +93,7 @@ function checkForWinHorizontal(): Colour | null {
   return null;
 }
 
-function checkForWinVertical(): Colour | null {
+function checkForWinVertical(grid: Grid): Colour | null {
   outer:for (let col = 0; col < 7; col++) {
     const column = grid[col];
     for (let startRow = 0; startRow < 6; startRow++) {
@@ -112,7 +113,7 @@ function checkForWinVertical(): Colour | null {
   return null;
 }
 
-function checkForWinDiagonalPositive(): Colour | null {
+function checkForWinDiagonalPositive(grid: Grid): Colour | null {
   outer:for (let startCol = 0; startCol < 4; startCol++) {
     const column = grid[startCol];
     for (let startRow = 0; startRow < 3; startRow++) {
@@ -135,7 +136,7 @@ function checkForWinDiagonalPositive(): Colour | null {
   return null;
 }
 
-function checkForWinDiagonalNegative(): Colour | null {
+function checkForWinDiagonalNegative(grid: Grid): Colour | null {
   outer:for (let startCol = 0; startCol < 4; startCol++) {
     const column = grid[grid.length - 1 - startCol];
     for (let startRow = 0; startRow < 3; startRow++) {
@@ -158,11 +159,11 @@ function checkForWinDiagonalNegative(): Colour | null {
   return null;
 }
 
-function checkWin(): Colour | null {
-  return checkForWinHorizontal() || checkForWinVertical() || checkForWinDiagonalPositive() || checkForWinDiagonalNegative();
+export function checkWin(grid: Grid): Colour | null {
+  return checkForWinHorizontal(grid) || checkForWinVertical(grid) || checkForWinDiagonalPositive(grid) || checkForWinDiagonalNegative(grid);
 }
 
-function checkDraw(): boolean {
+export function checkDraw(grid: Grid): boolean {
   for (const col of grid) {
     if (col.length < 6) return false;
   }
@@ -191,11 +192,19 @@ function detatchEventListeners() {
   }
 }
 
-function triggerAI() {
-  setTimeout(() => {
+function triggerAI(side: Colour, first: boolean = false) {
+  setTimeout(async () => {
     if (!ALLOW_AI || hasWon || hasDraw) return;
-    const available = availableColumns();
-    const col = available[Math.floor(Math.random() * available.length)];
+    let col: number = 0;
+    if (first) {
+    // if (side === 'red') {
+      const available = availableColumns();
+      col = available[Math.floor(Math.random() * available.length)];
+    } else {
+      console.log('thinking')
+      col = await evaluteMoves(grid, side);
+      console.log('thunk');
+    }
     placeTokenInColumn(col);
   }, 0);
 }
@@ -210,13 +219,13 @@ function gameEnd() {
 
 function placeTokenInColumn(column: number) {
   if (addColourToColumn(column, sideToPlay)) {
-    const won = checkWin();
+    const won = checkWin(grid);
     if (won) {
       createWinMessage(won);
       detatchEventListeners();
       hasWon = true;
       gameEnd();
-    } else if (checkDraw()) {
+    } else if (checkDraw(grid)) {
       createWinMessage('nobody');
       detatchEventListeners();
       hasDraw = true;
@@ -224,7 +233,7 @@ function placeTokenInColumn(column: number) {
     } else {
       updateToPlay();
       if (AI_BATTLE || (ALLOW_AI && sideToPlay == 'yellow')) {
-        triggerAI();
+        triggerAI(sideToPlay);
       }
     }
   }
@@ -240,11 +249,12 @@ function attachEventListeners() {
 }
 
 function init() {
-  attachEventListeners();
   updateToPlay();
   updateToPlay();
   if (AI_BATTLE) {
-    triggerAI();
+    triggerAI('red', true);
+  } else {
+    attachEventListeners();
   }
 }
 
