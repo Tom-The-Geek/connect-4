@@ -1,9 +1,7 @@
 import './style.css';
 import '@fontsource/poppins';
 import { evaluteMoves } from './computer';
-
-export type Colour = 'red' | 'yellow';
-export type Grid = [Colour[], Colour[], Colour[], Colour[], Colour[], Colour[], Colour[]];
+import { checkForWin, Colour, Grid } from './game';
 
 function getColumnElement(idx: number): HTMLDivElement {
   return document.querySelector<HTMLDivElement>(`#col-${idx}`)!;
@@ -45,7 +43,6 @@ function addColourToColumn(idx: number, colour: Colour): boolean {
   const col = getColumnElement(idx);
   col.appendChild(createCircleElement(colour));
   grid[idx].push(colour);
-  console.table(grid);
   if (grid[idx].length >= 6) {
     col.classList.add('full');
   }
@@ -160,7 +157,8 @@ function checkForWinDiagonalNegative(grid: Grid): Colour | null {
 }
 
 export function checkWin(grid: Grid): Colour | null {
-  return checkForWinHorizontal(grid) || checkForWinVertical(grid) || checkForWinDiagonalPositive(grid) || checkForWinDiagonalNegative(grid);
+  // return checkForWinHorizontal(grid) || checkForWinVertical(grid) || checkForWinDiagonalPositive(grid) || checkForWinDiagonalNegative(grid);
+  return checkForWin(grid)
 }
 
 export function checkDraw(grid: Grid): boolean {
@@ -175,7 +173,7 @@ let sideToPlay: Colour = 'red';
 const sideToPlayEle = document.querySelector<HTMLHeadingElement>('#to-move')!;
 let hasWon = false;
 let hasDraw = false;
-const ALLOW_AI = true;
+const ENABLE_AI = true;
 const AI_BATTLE = true;
 
 function updateToPlay() {
@@ -194,7 +192,7 @@ function detatchEventListeners() {
 
 function triggerAI(side: Colour, first: boolean = false) {
   setTimeout(async () => {
-    if (!ALLOW_AI || hasWon || hasDraw) return;
+    if (!ENABLE_AI || hasWon || hasDraw) return;
     let col: number = 0;
     if (first) {
     // if (side === 'red') {
@@ -232,7 +230,7 @@ function placeTokenInColumn(column: number) {
       gameEnd();
     } else {
       updateToPlay();
-      if (AI_BATTLE || (ALLOW_AI && sideToPlay == 'yellow')) {
+      if (AI_BATTLE || (ENABLE_AI && sideToPlay == 'yellow')) {
         triggerAI(sideToPlay);
       }
     }
