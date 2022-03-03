@@ -14,7 +14,7 @@ export async function evaluteMoves(grid: Grid, colour: Colour): Promise<number> 
                     return resolve();
                 }
                 const newGrid = makeMove(grid, colour, col);
-                const score = (await minimaxSearch(newGrid, otherColour(colour), 8, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
+                const score = -(await minimaxSearch(newGrid, otherColour(colour), 8, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
                 if (score > bestScore) {
                     console.log('new best score', score, col);
                     bestScore = score;
