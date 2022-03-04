@@ -1,7 +1,7 @@
 import './style.css';
 import '@fontsource/poppins';
 import { evaluteMoves } from './computer';
-import { checkForWin, Colour, Grid } from './game';
+import { checkDraw, checkWin, Colour, Grid, otherColour } from './game';
 
 function getColumnElement(idx: number): HTMLDivElement {
   return document.querySelector<HTMLDivElement>(`#col-${idx}`)!;
@@ -9,15 +9,6 @@ function getColumnElement(idx: number): HTMLDivElement {
 
 const gridContainer = document.querySelector<HTMLDivElement>('.grid-container')!;
 const gridEle = document.querySelector<HTMLDivElement>('.grid')!;
-
-export function otherColour(col: Colour): Colour {
-  switch (col) {
-    case 'red':
-      return 'yellow';
-    case 'yellow':
-      return 'red';
-  }
-}
 
 function createCircleElement(colour: Colour): HTMLDivElement {
   const ele = document.createElement('div');
@@ -156,25 +147,13 @@ function checkForWinDiagonalNegative(grid: Grid): Colour | null {
   return null;
 }
 
-export function checkWin(grid: Grid): Colour | null {
-  // return checkForWinHorizontal(grid) || checkForWinVertical(grid) || checkForWinDiagonalPositive(grid) || checkForWinDiagonalNegative(grid);
-  return checkForWin(grid)
-}
-
-export function checkDraw(grid: Grid): boolean {
-  for (const col of grid) {
-    if (col.length < 6) return false;
-  }
-  return true;
-}
-
 let grid: Grid = [[], [], [], [], [], [], []];
 let sideToPlay: Colour = 'red';
 const sideToPlayEle = document.querySelector<HTMLHeadingElement>('#to-move')!;
 let hasWon = false;
 let hasDraw = false;
 const ENABLE_AI = true;
-const AI_BATTLE = true;
+const AI_BATTLE = false;
 
 function updateToPlay() {
   gridEle.classList.remove(sideToPlay);

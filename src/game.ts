@@ -48,3 +48,24 @@ export function checkForWin(grid: Grid): Colour | null {
     }
     return null;
 }
+
+export function checkWin(grid: Grid): Colour | null {
+    // return checkForWinHorizontal(grid) || checkForWinVertical(grid) || checkForWinDiagonalPositive(grid) || checkForWinDiagonalNegative(grid);
+    return checkForWin(grid)
+}
+
+export function checkDraw(grid: Grid): boolean {
+    for (const col of grid) {
+        if (col.length < 6) return false;
+    }
+    return true;
+}
+
+export function otherColour(col: Colour): Colour {
+    switch (col) {
+        case 'red':
+            return 'yellow';
+        case 'yellow':
+            return 'red';
+    }
+}
