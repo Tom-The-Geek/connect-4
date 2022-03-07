@@ -58,7 +58,7 @@ const sideToPlayEle = document.querySelector<HTMLHeadingElement>('#to-move')!;
 let hasWon = false;
 let hasDraw = false;
 const ENABLE_AI = true;
-const AI_BATTLE = true;
+const AI_BATTLE = false;
 
 function updateToPlay() {
   gridEle.classList.remove(sideToPlay);
