@@ -21,7 +21,7 @@ export async function evaluteMoves(grid: Grid, colour: Colour, shouldUpdateStats
                     return resolve();
                 }
                 const newGrid = makeMove(grid, colour, col);
-                const score = (await minimaxSearch(newGrid, otherColour(colour), 9, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
+                const score = (await minimaxSearch(newGrid, otherColour(colour), 8, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
                 if (score > bestScore) {
                     console.log('new best score', score, col);
                     bestScore = score;
@@ -94,7 +94,7 @@ function makeMove(grid: Grid, colour: Colour, move: number): Grid {
 function rankPosition(grid: Grid, side: Colour, twos: boolean = false): number {
     const win = checkWin(grid);
     if (win) {
-        return win === side ? 1000 : -1000;
+        return win === side ? 100000 : -100000;
     }
 
     if (checkDraw(grid)) {

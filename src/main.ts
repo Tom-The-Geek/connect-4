@@ -52,108 +52,13 @@ function availableColumns(): number[] {
   return available;
 }
 
-function checkForWinHorizontal(grid: Grid): Colour | null {
-  for (let row = 0; row < 6; row++) {
-    for (let startCol = 0; startCol < 4; startCol++) {
-      const startColumn = grid[startCol];
-      if (startColumn.length < (row+1)) {
-        continue;
-      }
-      const initialColour = grid[startCol][row];
-      let ok = true;
-      for (let i = 1; i <= 3; i++) {
-        const c = grid[startCol+i];
-        if (c.length < (row+1)) {
-          ok = false;
-          break;
-        }
-        if (c[row] != initialColour) {
-          ok = false;
-          break;
-        }
-      }
-      if (ok) {
-        return initialColour;
-      }
-    }
-  }
-
-  return null;
-}
-
-function checkForWinVertical(grid: Grid): Colour | null {
-  outer:for (let col = 0; col < 7; col++) {
-    const column = grid[col];
-    for (let startRow = 0; startRow < 6; startRow++) {
-      if (column.length < (startRow + 4)) {
-        continue outer;
-      }
-      const window = column.slice(startRow, startRow + 4 + 1);
-      const firstCol = window[0];
-      for (const col of window) {
-        if (col !== firstCol) {
-          continue outer;
-        }
-      }
-      return firstCol;
-    }
-  }
-  return null;
-}
-
-function checkForWinDiagonalPositive(grid: Grid): Colour | null {
-  outer:for (let startCol = 0; startCol < 4; startCol++) {
-    const column = grid[startCol];
-    for (let startRow = 0; startRow < 3; startRow++) {
-      if (column.length < startRow) {
-        continue outer;
-      }
-      const initial = column[startRow];
-      for (let i = 1; i < 4; i++) {
-        const newColumn = grid[startCol + i];
-        if (newColumn.length < startRow + i) {
-          continue outer;
-        }
-        if (newColumn[startRow + i] !== initial) {
-          continue outer;
-        }
-      }
-      return initial;
-    }
-  }
-  return null;
-}
-
-function checkForWinDiagonalNegative(grid: Grid): Colour | null {
-  outer:for (let startCol = 0; startCol < 4; startCol++) {
-    const column = grid[grid.length - 1 - startCol];
-    for (let startRow = 0; startRow < 3; startRow++) {
-      if (column.length < startRow) {
-        continue outer;
-      }
-      const initial = column[startRow];
-      for (let i = 1; i < 4; i++) {
-        const newColumn = grid[grid.length - 1 - (startCol + i)];
-        if (newColumn.length < startRow + i) {
-          continue outer;
-        }
-        if (newColumn[startRow + i] !== initial) {
-          continue outer;
-        }
-      }
-      return initial;
-    }
-  }
-  return null;
-}
-
 let grid: Grid = [[], [], [], [], [], [], []];
 let sideToPlay: Colour = 'red';
 const sideToPlayEle = document.querySelector<HTMLHeadingElement>('#to-move')!;
 let hasWon = false;
 let hasDraw = false;
 const ENABLE_AI = true;
-const AI_BATTLE = false;
+const AI_BATTLE = true;
 
 function updateToPlay() {
   gridEle.classList.remove(sideToPlay);
@@ -169,12 +74,12 @@ function detatchEventListeners() {
   }
 }
 
-function triggerAI(side: Colour, first: boolean = false) {
+function triggerAI(side: Colour, _first: boolean = false) {
   setTimeout(async () => {
     if (!ENABLE_AI || hasWon || hasDraw) return;
     let col: number = 0;
-    if (first) {
-    // if (side === 'red') {
+    // if (_first) {
+    if (side === 'red') {
       const available = availableColumns();
       col = available[Math.floor(Math.random() * available.length)];
     } else {
@@ -190,7 +95,7 @@ function gameEnd() {
   if (AI_BATTLE) {
     setTimeout(() => {
       window.location.reload();
-    }, 500);
+    }, 2000);
   }
 }
 
