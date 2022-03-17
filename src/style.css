@@ -45,11 +45,11 @@ body {
   opacity: .25;
 }
 
-.grid.red > .column:hover::after {
+.grid.caninteract.red > .column:hover::after {
   background-color: red;
 }
 
-.grid.yellow > .column:hover::after {
+.grid.caninteract.yellow > .column:hover::after {
   background-color: yellow;
 }
 
