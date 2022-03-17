@@ -4,7 +4,7 @@ let totalEvalulated = 0;
 let totalPruned = 0;
 let startTime: Date | null = null;
 
-export async function evaluteMoves(grid: Grid, colour: Colour, shouldUpdateStats: boolean = true): Promise<number> {
+export async function evaluteMoves(grid: Grid, colour: Colour, shouldUpdateStats: boolean = true, searchDepth: number = 8): Promise<number> {
     if (checkDraw(grid)) throw new Error('ohno');
 
     startTime = new Date();
@@ -21,7 +21,7 @@ export async function evaluteMoves(grid: Grid, colour: Colour, shouldUpdateStats
                     return resolve();
                 }
                 const newGrid = makeMove(grid, colour, col);
-                const score = (await minimaxSearch(newGrid, otherColour(colour), 8, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
+                const score = (await minimaxSearch(newGrid, otherColour(colour), searchDepth, -2000, 2000)) * (colour === 'yellow' ? -1 : 1);
                 if (score > bestScore) {
                     console.log('new best score', score, col);
                     bestScore = score;

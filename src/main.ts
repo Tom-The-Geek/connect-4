@@ -59,6 +59,7 @@ let hasWon = false;
 let hasDraw = false;
 const ENABLE_AI = true;
 const AI_BATTLE = false;
+const ACTUAL_OPPONENT = true;
 
 function updateToPlay() {
   gridEle.classList.remove(sideToPlay);
@@ -79,7 +80,7 @@ function triggerAI(side: Colour, _first: boolean = false) {
     if (!ENABLE_AI || hasWon || hasDraw) return;
     let col: number = 0;
     // if (_first) {
-    if (side === 'red') {
+    if (!ACTUAL_OPPONENT || side === 'red') {
       const available = availableColumns();
       col = available[Math.floor(Math.random() * available.length)];
     } else {
