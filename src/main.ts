@@ -67,11 +67,7 @@ function updateToPlay() {
   sideToPlay = otherColour(sideToPlay);
   gridEle.classList.add(sideToPlay);
   setTimeout(() => {
-    if (allowsInteraction) {
-      sideToPlayEle.innerText = `${sideToPlay}'s turn`;
-    } else {
-      sideToPlayEle.innerText = `${sideToPlay} is thinking...`;
-    }
+    sideToPlayEle.innerText = allowsInteraction ? `${sideToPlay}'s turn` : `${sideToPlay} is thinking...`;
   }, 1);
 }
 
