@@ -57,6 +57,7 @@ let sideToPlay: Colour = 'red';
 const sideToPlayEle = document.querySelector<HTMLHeadingElement>('#to-move')!;
 let hasWon = false;
 let hasDraw = false;
+let allowsInteraction = false;
 const ENABLE_AI = true;
 const AI_BATTLE = false;
 const ACTUAL_OPPONENT = true;
@@ -65,10 +66,29 @@ function updateToPlay() {
   gridEle.classList.remove(sideToPlay);
   sideToPlay = otherColour(sideToPlay);
   gridEle.classList.add(sideToPlay);
-  sideToPlayEle.innerText = `${sideToPlay} to play`;
+  setTimeout(() => {
+    if (allowsInteraction) {
+      sideToPlayEle.innerText = `${sideToPlay}'s turn`;
+    } else {
+      sideToPlayEle.innerText = `${sideToPlay} is thinking...`;
+    }
+  }, 1);
+}
+
+function attachEventListeners() {
+  gridEle.classList.add('caninteract');
+  allowsInteraction = true;
+  for (let i = 0; i < 7; i++) {
+    const col = getColumnElement(i);
+    col.onclick = () => {
+      placeTokenInColumn(i);
+    };
+  }
 }
 
 function detatchEventListeners() {
+  gridEle.classList.remove('caninteract');
+  allowsInteraction = false;
   for (let i = 0; i < 7; i++) {
     const col = getColumnElement(i);
     col.onclick = null;
@@ -76,6 +96,7 @@ function detatchEventListeners() {
 }
 
 function triggerAI(side: Colour, _first: boolean = false) {
+  detatchEventListeners();
   setTimeout(async () => {
     if (!ENABLE_AI || hasWon || hasDraw) return;
     let col: number = 0;
@@ -89,6 +110,7 @@ function triggerAI(side: Colour, _first: boolean = false) {
       console.log('thunk');
     }
     placeTokenInColumn(col);
+    attachEventListeners();
   }, 0);
 }
 
@@ -122,23 +144,14 @@ function placeTokenInColumn(column: number) {
   }
 }
 
-function attachEventListeners() {
-  for (let i = 0; i < 7; i++) {
-    const col = getColumnElement(i);
-    col.onclick = () => {
-      placeTokenInColumn(i);
-    };
-  }
-}
-
 function init() {
-  updateToPlay();
-  updateToPlay();
   if (AI_BATTLE) {
     triggerAI('red', true);
   } else {
     attachEventListeners();
   }
+  updateToPlay();
+  updateToPlay();
 }
 
 init();
